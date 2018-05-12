@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <form>
+        <input name="query" value="{{ query | replace({"+":" "}) }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <table id="places">
+        <thead>
+            <th>name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Hours</th>
+            <th>Website</th>
+        </thead>
+
+        <tbody>
+            {% for place in places %}
+                <tr>
+                    <td>{{ place.name }}</td>
+                    <td>{{ place.phone }}</td>
+                    <td>{{ place.address }}</td>
+                    <td>{{ place.hours }}</td>
+                    <td>{{ place.website }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $(document).ready( function () {
+            $('#places').DataTable();
+        } );
+    </script>
+{% endblock %}

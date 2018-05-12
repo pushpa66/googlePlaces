@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Config\Configuration;
+use AppBundle\Structs\Place;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,14 +23,26 @@ class DefaultController extends Controller
     }
 
     /**
-     * @Route("/api/query", name="querySearch")
+     * @Route("/list", name="list_places")
      */
-    public function querySearch(Request $request){
+    public function listPlaces(Request $request){
         $query = $request->get('query');
 
         $query = str_replace(" ", "+", $query);
 
+        $places = $this->searchPlaces($query);
+
+        return $this->render('default/list.html.twig',array(
+                'query' => $query,
+                'places'=> $places
+            ));
+    }
+
+    private function searchPlaces($query){
+        $query = str_replace(" ", "+", $query);
+
         $data = array();
+        $places = array();
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -55,17 +68,20 @@ class DefaultController extends Controller
             echo "cURL Error #:" . $err;
         } else {
             $data = json_decode($response, true);
-        }
+            $data = $data['results'];
 
-        return new JsonResponse($data);
+            foreach ($data as $item){
+                $place = new Place();
+                $place->setName($item['name']);
+                $place->setAddress($item['formatted_address']);
+                $place = $this->placeIdSearch($item['place_id'],$place);
+                $places[] = $place;
+            }
+        }
+        return $places;
     }
 
-    /**
-     * @Route("/api/id", name="placeIdSearch")
-     */
-    public function placeIdSearch(Request $request){
-        $placeId = $request->get('placeId');
-
+    private function placeIdSearch($placeId,$place){
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -90,7 +106,21 @@ class DefaultController extends Controller
         if ($err) {
             echo "cURL Error #:" . $err;
         } else {
-            echo $response;
+            $response = json_decode($response, true);
+            $data = $response['result'];
+            if(isset($data['formatted_phone_number'])){
+                $place->setPhone($data['formatted_phone_number']);
+            }
+            if(isset($data['opening_hours']['weekday_text'])){
+                $place->setHours(implode(",", $data['opening_hours']['weekday_text']));
+            }
+
+            if(isset($data['website'])){
+                $place->setWebsite($data['website']);
+            }
+
         }
+
+        return $place;
     }
 }
