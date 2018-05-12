@@ -3,7 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Config\Configuration;
-use AppBundle\Structs\Place;
+use AppBundle\Entity\Place;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -72,6 +72,7 @@ class DefaultController extends Controller
 
             foreach ($data as $item){
                 $place = new Place();
+                $place->setPlaceId($item['place_id']);
                 $place->setName($item['name']);
                 $place->setAddress($item['formatted_address']);
                 $place = $this->placeIdSearch($item['place_id'],$place);
@@ -123,4 +124,5 @@ class DefaultController extends Controller
 
         return $place;
     }
+
 }

@@ -24,6 +24,13 @@ class Place
     /**
      * @var string
      *
+     * @ORM\Column(name="place_id", type="string", unique=true, length=255)
+     */
+    private $placeId;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="name", type="string", length=255)
      */
     private $name;
@@ -65,6 +72,22 @@ class Place
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlaceId()
+    {
+        return $this->placeId;
+    }
+
+    /**
+     * @param string $placeId
+     */
+    public function setPlaceId($placeId)
+    {
+        $this->placeId = $placeId;
     }
 
     /**
