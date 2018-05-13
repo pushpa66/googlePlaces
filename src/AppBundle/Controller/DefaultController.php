@@ -46,7 +46,8 @@ class DefaultController extends Controller
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => "https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&key=".Configuration::SearchKey,
+//            CURLOPT_URL => "https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&key=".Configuration::SearchKey,
+            CURLOPT_URL => "https://maps.googleapis.com/maps/api/place/search/json?keyword=$query&location=36.778259,-119.417931&radius=50000&hasNextPage=true&nextPage()=true&sensor=false&key=".Configuration::SearchKey."&type=medical",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_MAXREDIRS => 10,
@@ -73,8 +74,6 @@ class DefaultController extends Controller
             foreach ($data as $item){
                 $place = new Place();
                 $place->setPlaceId($item['place_id']);
-                $place->setName($item['name']);
-                $place->setAddress($item['formatted_address']);
                 $place = $this->placeIdSearch($item['place_id'],$place);
                 $places[] = $place;
             }
@@ -109,15 +108,22 @@ class DefaultController extends Controller
         } else {
             $response = json_decode($response, true);
             $data = $response['result'];
+            $place->setName($data['name']);
+            $place->setAddress($data['formatted_address']);
             if(isset($data['formatted_phone_number'])){
                 $place->setPhone($data['formatted_phone_number']);
+            } else {
+                $place->setPhone("-");
             }
             if(isset($data['opening_hours']['weekday_text'])){
                 $place->setHours(implode(",", $data['opening_hours']['weekday_text']));
+            } else {
+                $place->setHours('-');
             }
-
             if(isset($data['website'])){
                 $place->setWebsite($data['website']);
+            } else {
+                $place->setWebsite('-');
             }
 
         }

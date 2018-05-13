@@ -4,6 +4,8 @@
 
     <form>
         <input name="query" value="{{ query | replace({"+":" "}) }}">
+        {#<input name="query" value="{{ query | replace({"+":" "}) }}">#}
+        {#<input name="query" value="{{ query | replace({"+":" "}) }}">#}
         <button type="submit">Search</button>
     </form>
 
@@ -20,7 +22,7 @@
         <tbody>
             {% for place in places %}
                 <tr>
-                    <td>{{ place.placeId }}</td>
+                    <td>{{ place.name }}</td>
                     <td>{{ place.phone }}</td>
                     <td>{{ place.address }}</td>
                     <td>{{ place.hours }}</td>
