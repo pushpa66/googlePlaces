@@ -40,9 +40,9 @@ class DefaultController extends Controller
 
     private function searchPlaces($query){
         $query = str_replace(" ", "+", $query);
-
         $data = array();
         $places = array();
+        $reviews = array();
 
         $curl = curl_init();
         curl_setopt_array($curl, array(
@@ -72,16 +72,20 @@ class DefaultController extends Controller
             $data = $data['results'];
 
             foreach ($data as $item){
-                $place = new Place();
-                $place->setPlaceId($item['place_id']);
-                $place = $this->placeIdSearch($item['place_id'],$place);
-                $places[] = $place;
+                $placeAndReviews = $this->placeIdSearch($item['place_id']);
+                $places[] = $placeAndReviews;
             }
         }
         return $places;
     }
 
-    private function placeIdSearch($placeId,$place){
+    private function placeIdSearch($placeId){
+        $place = new Place();
+        $place->setPlaceId($placeId);
+
+        $placeAndReviews = array();
+        $reviews = array();
+
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
@@ -126,9 +130,57 @@ class DefaultController extends Controller
                 $place->setWebsite('-');
             }
 
+            $place->setLng($data['geometry']['location']['lng']);
+            $place->setLat($data['geometry']['location']['lat']);
+
+            $placeAndReviews['place'] = $place;
+
+            if(isset($data['reviews'])){
+                $readReviews = $data['reviews'];
+
+                foreach ($readReviews as $readReview){
+                    $review = array();
+                    $review['placeId'] = $placeId;
+                    if(isset($readReview['author_name'])){
+                        $review['authorName'] = $readReview['author_name'];
+                    } else {
+                        $review['authorName'] = '-';
+                    }
+                    if(isset($readReview['author_url'])){
+                        $review['authorUrl'] = $readReview['author_url'];
+                    } else {
+                        $review['authorUrl'] = '-';
+                    }
+                    if(isset($readReview['language'])){
+                        $review['language'] = $readReview['language'];
+                    } else {
+                        $review['language'] = '-';
+                    }
+                    if(isset($readReview['profile_photo_url'])){
+                        $review['profilePhotoUrl'] = $readReview['profile_photo_url'];
+                    } else {
+                        $review['profilePhotoUrl'] = '-';
+                    }
+                    $review['rating'] = $readReview['rating'];
+                    if (isset($readReview['relative_time_description'])){
+                        $review['relativeTimeDescription'] = $readReview['relative_time_description'];
+                    } else {
+                        $review['relativeTimeDescription'] = '-';
+                    }
+                    if (isset($readReview['text'])){
+                        $review['text'] = $readReview['text'];
+                    } else {
+                        $review['text'] = '-';
+                    }
+                    $review['time'] = $readReview['time'];
+
+                    $reviews[] = $review;
+                }
+            }
+            $placeAndReviews['reviews'] = json_encode($reviews);
         }
 
-        return $place;
+        return $placeAndReviews;
     }
 
 }

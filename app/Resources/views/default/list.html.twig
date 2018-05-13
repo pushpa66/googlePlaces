@@ -12,6 +12,8 @@
     <table id="places">
         <thead>
             <th>Name</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
             <th>Phone</th>
             <th>Address</th>
             <th>Hours</th>
@@ -22,12 +24,15 @@
         <tbody>
             {% for place in places %}
                 <tr>
-                    <td>{{ place.name }}</td>
-                    <td>{{ place.phone }}</td>
-                    <td>{{ place.address }}</td>
-                    <td>{{ place.hours }}</td>
-                    <td>{{ place.website }}</td>
-                    <td><a href="{{ path('saveData', {'placeId': place.placeId, 'name':place.name, 'phone':place.phone, 'address':place.address, 'hours':place.hours, 'website':place.website}) }}">Add</a></td>
+                    <td>{{ place.place.name }}</td>
+                    {#<td>{{ place.reviews}}</td>#}
+                    <td>{{ place.place.lat }}</td>
+                    <td>{{ place.place.lng }}</td>
+                    <td>{{ place.place.phone }}</td>
+                    <td>{{ place.place.address }}</td>
+                    <td>{{ place.place.hours }}</td>
+                    <td>{{ place.place.website }}</td>
+                    <td><a href="{{ path('saveData', {'placeId': place.place.placeId, 'name':place.place.name, 'phone':place.place.phone, 'address':place.place.address, 'hours':place.place.hours, 'website':place.place.website, 'lat':place.place.lat, 'lng':place.place.lng, 'reviews':place.reviews}) }}">Add</a></td>
                     {#<td><a href="{{ path('saveData', {'placeId': place.placeId}) }}">Add</a></td>#}
                     {#<td><button id="addButton" type="button" class="btn btn-primary">Add</button></td>#}
                 </tr>
