@@ -72,15 +72,25 @@ class DefaultController extends Controller
             $data = $data['results'];
 
             foreach ($data as $item){
-                $placeAndReviews = $this->placeIdSearch($item['place_id']);
+                $place = new Place();
+                if(isset($item['photos'])){
+                    $image = $item['photos'][0]['html_attributions'][0];
+                    $phrase1 = 'https';
+                    $phrase2 = 'photos';
+                    $index1 = strpos($image, $phrase1);
+                    $index2 = strpos($image,$phrase2);
+                    $place->setPhoto(substr($image, $index1, $index2 - $index1 + strlen($phrase2)));
+                } else {
+                    $place->setPhoto('-');
+                }
+                $placeAndReviews = $this->placeIdSearch($item['place_id'], $place);
                 $places[] = $placeAndReviews;
             }
         }
         return $places;
     }
 
-    private function placeIdSearch($placeId){
-        $place = new Place();
+    private function placeIdSearch($placeId, $place){
         $place->setPlaceId($placeId);
 
         $placeAndReviews = array();

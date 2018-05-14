@@ -77,6 +77,12 @@ class Place
      */
     private $website;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="photo", type="string", length=1000)
+     */
+    private $photo;
 
     /**
      * Get id
@@ -255,5 +261,22 @@ class Place
     {
         $this->lng = $lng;
     }
+
+    /**
+     * @return string
+     */
+    public function getPhoto()
+    {
+        return $this->photo;
+    }
+
+    /**
+     * @param string $photo
+     */
+    public function setPhoto($photo)
+    {
+        $this->photo = $photo;
+    }
+
 }
 

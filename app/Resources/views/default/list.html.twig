@@ -18,6 +18,7 @@
             <th>Address</th>
             <th>Hours</th>
             <th>Website</th>
+            <th>Photo</th>
             <th>Add</th>
         </thead>
 
@@ -32,7 +33,8 @@
                     <td>{{ place.place.address }}</td>
                     <td>{{ place.place.hours }}</td>
                     <td>{{ place.place.website }}</td>
-                    <td><a href="{{ path('saveData', {'placeId': place.place.placeId, 'name':place.place.name, 'phone':place.place.phone, 'address':place.place.address, 'hours':place.place.hours, 'website':place.place.website, 'lat':place.place.lat, 'lng':place.place.lng, 'reviews':place.reviews}) }}">Add</a></td>
+                    <td><a href="{{ place.place.photo }}">View</a></td>
+                    <td><a href="{{ path('saveData', {'placeId': place.place.placeId, 'name':place.place.name, 'phone':place.place.phone, 'address':place.place.address, 'hours':place.place.hours, 'website':place.place.website, 'lat':place.place.lat, 'lng':place.place.lng, 'photo':place.place.photo,'reviews':place.reviews}) }}">Add</a></td>
                     {#<td><a href="{{ path('saveData', {'placeId': place.placeId}) }}">Add</a></td>#}
                     {#<td><button id="addButton" type="button" class="btn btn-primary">Add</button></td>#}
                 </tr>
