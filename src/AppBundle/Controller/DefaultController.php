@@ -26,98 +26,107 @@ class DefaultController extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $states = array(
-//            'Alabama',
-//            'Alaska',
-//            'Arizona',
-//            'Arkansas',
-//            'California',
-//            'Colorado',
-//            'Connecticut',
-//            'Delaware',
+            'Alabama',
+            'Alaska',
+            'Arizona',
+            'Arkansas',
+            'California',
+            'Colorado',
+            'Connecticut',
+            'Delaware',
             'Florida',
-//            'Georgia',
-//            'Hawaii',
-//            'Idaho',
-//            'Illinois',
-//            'Indiana',
-//            'Iowa',
-//            'Kansas',
-//            'Kentucky',
-//            'Louisiana',
-//            'Maine',
-//            'Maryland',
-//            'Massachusetts',
-//            'Michigan',
-//            'Minnesota',
-//            'Mississippi',
-//            'Missouri',
-//            'Montana',
-//            'Nebraska',
-//            'Nevada',
-//            'New Hampshire',
-//            'New Jersey',
-//            'New Mexico',
-//            'New York',
-//            'North Carolina',
-//            'North Dakota',
-//            'Ohio',
-//            'Oklahoma',
-//            'Oregon',
-//            'Pennsylvania',
-//            'Rhode Island',
-//            'South Carolina',
-//            'South Dakota',
-//            'Tennessee',
-//            'Texas',
-//            'Utah',
-//            'Vermont',
-//            'Virginia',
-//            'Washington',
-//            'Washington DC',
-//            'West Virginia',
-//            'Wisconsin',
-//            'Wyoming'
+            'Georgia',
+            'Hawaii',
+            'Idaho',
+            'Illinois',
+            'Indiana',
+            'Iowa',
+            'Kansas',
+            'Kentucky',
+            'Louisiana',
+            'Maine',
+            'Maryland',
+            'Massachusetts',
+            'Michigan',
+            'Minnesota',
+            'Mississippi',
+            'Missouri',
+            'Montana',
+            'Nebraska',
+            'Nevada',
+            'New Hampshire',
+            'New Jersey',
+            'New Mexico',
+            'New York',
+            'North Carolina',
+            'North Dakota',
+            'Ohio',
+            'Oklahoma',
+            'Oregon',
+            'Pennsylvania',
+            'Rhode Island',
+            'South Carolina',
+            'South Dakota',
+            'Tennessee',
+            'Texas',
+            'Utah',
+            'Vermont',
+            'Virginia',
+            'Washington',
+            'Washington DC',
+            'West Virginia',
+            'Wisconsin',
+            'Wyoming'
         );
+        $values = $request->get('values');
+        var_dump($values);
+//        exit;
 
-        $types = array("Medical Marijuana Dispensaries","Recreational Marijuana Dispensaries","Medical Marijuana Doctor");
+        if($values!= null){
+            $types = array("Medical Marijuana Dispensaries","Recreational Marijuana Dispensaries","Medical Marijuana Doctor");
+            foreach ($values as $state){
+                foreach ($types as $type){
+                    $query = $state." ".$type;
+                    $results = $this->searchPlaces($query);
+                    foreach ($results as $result){
+                        $place = $result['place'];
+                        $existingPlaces = $em->getRepository('AppBundle:Place')->findOneBy(array('placeId'=>$place->getPlaceId()));
+                        if($existingPlaces != null){
 
-        foreach ($states as $state){
-            foreach ($types as $type){
-                $query = $state." ".$type;
-                $results = $this->searchPlaces($query);
-                foreach ($results as $result){
-                    $place = $result['place'];
-                    $existingPlaces = $em->getRepository('AppBundle:Place')->findOneBy(array('placeId'=>$place->getPlaceId()));
-                    if($existingPlaces != null){
-
-                    }else{
-                        $place->setState($state);
-                        $place->setKeyword($type);
-                        $em->persist($place);
-                        $reviews = $result['reviews'];
-                        $reviews = json_decode($reviews, true);
-                        if(count($reviews) > 0){
-                            foreach ($reviews as $r){
-                                $review = new Review();
-                                $review->setPlace($place);
-                                $review->setAuthorName($r['authorName']);
-                                $review->setAuthorUrl($r['authorUrl']);
-                                $review->setLanguage($r['language']);
-                                $review->setProfilePhotoUrl($r['profilePhotoUrl']);
-                                $review->setRating($r['rating']);
-                                $review->setRelativeTimeDescription($r['relativeTimeDescription']);
-                                $text = $r['text'];
-                                $review->setText($this->remove_emoji($text));
-                                $review->setTime($r['time']);
-                                $em->persist($review);
-                                $em->flush();
+                        }else{
+                            $place->setState($state);
+                            $place->setKeyword($type);
+                            $em->persist($place);
+                            $reviews = $result['reviews'];
+                            $reviews = json_decode($reviews, true);
+                            if(count($reviews) > 0){
+                                foreach ($reviews as $r){
+                                    $review = new Review();
+                                    $review->setPlace($place);
+                                    $review->setAuthorName($r['authorName']);
+                                    $review->setAuthorUrl($r['authorUrl']);
+                                    $review->setLanguage($r['language']);
+                                    $review->setProfilePhotoUrl($r['profilePhotoUrl']);
+                                    $review->setRating($r['rating']);
+                                    $review->setRelativeTimeDescription($r['relativeTimeDescription']);
+                                    $text = $r['text'];
+                                    $review->setText($this->remove_emoji($text));
+                                    $review->setTime($r['time']);
+                                    $em->persist($review);
+                                    $em->flush();
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
             }
+        }else{
+            return $this->render('default/home.html.twig',array(
+                'states'=>$states
+            ));
         }
+
 
 
         var_dump("done");
