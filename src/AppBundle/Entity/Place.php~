@@ -292,52 +292,5 @@ class Place
         $this->photo = $photo;
     }
 
-
-    /**
-     * Set state
-     *
-     * @param string $state
-     *
-     * @return Place
-     */
-    public function setState($state)
-    {
-        $this->state = $state;
-
-        return $this;
-    }
-
-    /**
-     * Get state
-     *
-     * @return string
-     */
-    public function getState()
-    {
-        return $this->state;
-    }
-
-    /**
-     * Set keyword
-     *
-     * @param string $keyword
-     *
-     * @return Place
-     */
-    public function setKeyword($keyword)
-    {
-        $this->keyword = $keyword;
-
-        return $this;
-    }
-
-    /**
-     * Get keyword
-     *
-     * @return string
-     */
-    public function getKeyword()
-    {
-        return $this->keyword;
-    }
 }
+

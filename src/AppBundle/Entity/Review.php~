@@ -73,7 +73,7 @@ class Review
     /**
      * @var string
      *
-     * @ORM\Column(name="text", type="string", length=5000)
+     * @ORM\Column(name="text", type="string", length=2000)
      */
     private $text;
 
@@ -299,3 +299,4 @@ class Review
 
 
 }
+

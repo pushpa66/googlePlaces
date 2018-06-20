@@ -11,5 +11,7 @@ namespace AppBundle\Config;
 
 class Configuration
 {
-    const SearchKey = "AIzaSyAJ_h2CzktPmebYQNoiJO005rigdxuda9c";
+    const SearchKey = "AIzaSyAwK5Yk7UDjSARrn8ZeSsAAul2vrnzwD8s";
+//    const SearchKey = "AIzaSyAJ_h2CzktPmebYQNoiJO005rigdxuda9c";
+//    const SearchKey = "AIzaSyBrkUXpTUjynZa9g0Q1NEcZA0YG5ZPWT80";
 }
